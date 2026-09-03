@@ -1,0 +1,36 @@
+# --- Environments / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+*.log
+
+# --- Node (if you later add a bundler/build step) ---
+node_modules/
+dist/
+.npm/
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- Execution scratch (created at runtime by backend/execution/sandbox.py) ---
+/tmp/codevis_*/
+backend/tests/__pycache__/
+
+# --- Build artifacts ---
+*.o
+*.exe
+main
+main.out

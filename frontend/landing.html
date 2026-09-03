@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CodeVis &mdash; Turn Source Code Into Visual Logic</title>
+<meta name="description" content="Write, run, and visualize Python, C, and C++ programs as interactive flowcharts." />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<header class="topnav">
+  <div class="brand">
+    <div class="brand-mark">CV</div>
+    <div class="brand-name">CodeVis</div>
+  </div>
+  <nav class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#languages">Languages</a>
+    <a href="#features">Features</a>
+    <a href="#tech-stack">Tech Stack</a>
+    <a href="index.html" class="btn btn-primary" style="margin-left:8px;">Open Workspace</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <span class="hero-eyebrow">&#9679; Full-stack code execution &amp; visualization platform</span>
+  <h1>Turn source code into <span>visual logic.</span></h1>
+  <p class="lead">
+    Write, run, analyze, and visualize Python, C, and C++ programs in one
+    interactive workspace. See exactly what your code does &mdash; not just
+    what it prints.
+  </p>
+  <div class="hero-ctas">
+    <a href="index.html" class="btn btn-primary">Start Visualizing</a>
+    <a href="https://github.com/" target="_blank" rel="noopener" class="btn">View GitHub</a>
+  </div>
+</section>
+
+<section class="section" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-eyebrow">How It Works</div>
+    <h2>From keystrokes to control-flow diagram</h2>
+    <p class="section-lead">Every step below runs against real parsers and a real sandboxed compiler/interpreter &mdash; nothing on this page is mocked.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div><h3>Write code</h3><p>Use the Monaco-powered editor (the same engine behind VS Code) with syntax highlighting, bracket matching, and code folding for Python, C, or C++.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div><h3>Run it safely</h3><p>Your code executes inside a resource-limited sandbox: CPU time, memory, process count, and wall-clock limits are all enforced, with automatic cleanup after every run.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div><h3>Parse the real structure</h3><p>A language-specific adapter builds a genuine AST (Python's own `ast` module, pycparser for C, or a hand-written recursive-descent parser for C++) &mdash; never regex or keyword guessing.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div><h3>See the flow</h3><p>The AST is translated into a language-independent flowchart graph and rendered as an interactive, pannable, zoomable diagram with click-to-highlight source mapping.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="languages">
+  <div class="section-inner">
+    <div class="section-eyebrow">Supported Languages</div>
+    <h2>Three languages today, more by design</h2>
+    <p class="section-lead">Every language plugs into the same common intermediate representation, so adding a fourth is an adapter, not a rewrite.</p>
+    <div class="grid-3">
+      <div class="lang-card"><div class="lc-name">Python</div><div class="lc-desc">Full statement-level AST via the standard library `ast` module.</div></div>
+      <div class="lang-card"><div class="lc-name">C</div><div class="lc-desc">Real parsing via pycparser, with line-number-preserving preprocessing.</div></div>
+      <div class="lang-card"><div class="lc-name">C++</div><div class="lc-desc">A hand-written tokenizer + recursive-descent parser for a documented control-flow subset.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-eyebrow">Features</div>
+    <h2>Built for understanding, not just output</h2>
+    <div class="grid-4">
+      <div class="feature-card">
+        <div class="fi">&#9998;</div>
+        <h3>Professional editor</h3>
+        <p>Monaco-powered editing with folding, bracket matching, minimap, font controls, and fullscreen mode.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#9654;</div>
+        <h3>Real execution</h3>
+        <p>Actual compilation (gcc/g++) and interpretation (CPython), not simulated output.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#9670;</div>
+        <h3>Interactive flowcharts</h3>
+        <p>Pan, zoom, fit-to-screen, and inspect any node &mdash; built on a hand-written layered graph layout.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#8646;</div>
+        <h3>Source &lt;-&gt; flowchart mapping</h3>
+        <p>Click a node to highlight its source lines; move your cursor to highlight the matching node.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#128274;</div>
+        <h3>Sandboxed execution</h3>
+        <p>CPU, memory, process-count, and wall-clock limits with automatic cleanup after every run.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#9888;</div>
+        <h3>Honest error handling</h3>
+        <p>Execution errors and flowchart errors are always reported independently &mdash; never conflated.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#128190;</div>
+        <h3>Export &amp; share</h3>
+        <p>Download your source file or export the generated flowchart as a standalone SVG.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">&#128218;</div>
+        <h3>Built-in examples</h3>
+        <p>Six ready-to-run sample programs across all three languages to explore immediately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tech-stack">
+  <div class="section-inner">
+    <div class="section-eyebrow">Technology Stack</div>
+    <h2>Why each piece was chosen</h2>
+    <p class="section-lead">Full reasoning for every decision lives in <code>docs/TECHNICAL_DOCS.md</code>. Summary:</p>
+    <table class="tech-table">
+      <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Editor</td><td class="tt-choice">Monaco Editor</td><td>Industry-standard; the only external runtime dependency in the frontend</td></tr>
+        <tr><td>Frontend</td><td class="tt-choice">Vanilla JS (ES modules)</td><td>Zero build step &mdash; open <code>index.html</code> or serve statically, no npm install required to run</td></tr>
+        <tr><td>Flowchart layout</td><td class="tt-choice">Hand-written Sugiyama-style layout</td><td>No bundler-dependent graph library fits a zero-build architecture; fully unit-tested</td></tr>
+        <tr><td>Backend</td><td class="tt-choice">Flask</td><td>Minimal dependency footprint; every endpoint is tested end-to-end (see backend/tests/)</td></tr>
+        <tr><td>Python parsing</td><td class="tt-choice">stdlib <code>ast</code></td><td>Zero dependencies, complete statement coverage</td></tr>
+        <tr><td>C parsing</td><td class="tt-choice">pycparser</td><td>A real, mature C AST rather than regex heuristics</td></tr>
+        <tr><td>C++ parsing</td><td class="tt-choice">Custom recursive-descent parser</td><td>libclang wasn't installable in the target environment; a documented subset beats a fake full-language claim</td></tr>
+        <tr><td>Execution sandbox</td><td class="tt-choice"><code>resource.setrlimit</code> + process groups</td><td>CPU/memory/process limits with guaranteed wall-clock containment; container-ready design for production</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="security">
+  <div class="section-inner">
+    <div class="section-eyebrow">Safe Code Execution</div>
+    <h2>Defense in depth, honestly documented</h2>
+    <p class="section-lead">
+      Every run gets a fresh temp directory, a stripped environment, and hard limits on
+      CPU time, memory, process count, and wall-clock duration &mdash; enforced via
+      <code>os.setsid()</code> plus a process-group-wide kill so that even a
+      program which forks children cannot outlive its timeout. This is real
+      process-level isolation, not a kernel/VM-level sandbox; see
+      <code>docs/TECHNICAL_DOCS.md</code> for the full threat model and the
+      container-based upgrade path for multi-tenant production deployments.
+    </p>
+  </div>
+</section>
+
+<section class="section" id="roadmap">
+  <div class="section-inner">
+    <div class="section-eyebrow">Future Roadmap</div>
+    <h2>Where this goes next</h2>
+    <div class="roadmap-list">
+      <div class="roadmap-item"><span class="ri-dot"></span> Expand function-call flowcharting to include interprocedural (multi-function) flow, not just single-function analysis</div>
+      <div class="roadmap-item"><span class="ri-dot"></span> Full standard-grammar C++ support via a WASM-compiled libclang, once available</div>
+      <div class="roadmap-item"><span class="ri-dot"></span> Additional language adapters (Java, JavaScript, Go) using the existing common IR</div>
+      <div class="roadmap-item"><span class="ri-dot"></span> Containerized execution workers (Docker/gVisor) for multi-tenant production hosting</div>
+      <div class="roadmap-item"><span class="ri-dot"></span> Shareable session links and execution history</div>
+    </div>
+  </div>
+</section>
+
+<section class="footer-cta">
+  <h2>Ready to see your code differently?</h2>
+  <a href="index.html" class="btn btn-primary">Start Visualizing &rarr;</a>
+</section>
+
+<footer class="site-footer">
+  CodeVis &mdash; built as a full-stack demonstration project. See the README for setup instructions.
+</footer>
+
+</body>
+</html>

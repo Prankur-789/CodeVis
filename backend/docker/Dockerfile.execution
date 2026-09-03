@@ -1,0 +1,51 @@
+# =============================================================================
+# CodeVis - hardened execution container
+# =============================================================================
+# This image is the production upgrade path referenced throughout
+# docs/TECHNICAL_DOCS.md ("Security Model"). The Flask app in backend/ can
+# run code directly via backend/execution/sandbox.py (process-level
+# isolation with resource limits), which is what this project runs and
+# tests against in its own development/CI environment. For a public,
+# multi-tenant deployment, run the SAME backend code inside a container
+# built from this image instead, with the flags below, to add kernel-level
+# isolation on top of the existing resource limits:
+#
+#   docker build -t codevis-executor -f backend/docker/Dockerfile.execution backend
+#   docker run --rm -i \
+#     --network none \
+#     --read-only \
+#     --tmpfs /tmp:size=64m,mode=1777 \
+#     --pids-limit 32 \
+#     --memory 256m \
+#     --cpus 1 \
+#     --cap-drop ALL \
+#     --security-opt no-new-privileges \
+#     --user codevis \
+#     codevis-executor
+#
+# Nothing in the adapters/ or ir.py modules needs to change to run this way
+# -- only execution/runners.py's subprocess calls would be swapped for
+# `docker run` invocations (or, better, this image running as a long-lived
+# worker behind a small internal RPC, to avoid per-request container
+# start-up latency). That wiring is intentionally left as a roadmap item
+# (see README "Future Roadmap") rather than shipped untested.
+# =============================================================================
+
+FROM ubuntu:24.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3 python3-pip gcc g++ libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Non-root execution user with no home directory privileges.
+RUN useradd --no-create-home --shell /usr/sbin/nologin codevis
+
+WORKDIR /workspace
+RUN chown codevis:codevis /workspace
+
+USER codevis
+
+# The container is intentionally given no application code of its own --
+# the orchestrating backend mounts/pipes a single source file into
+# /workspace at run time and invokes gcc/g++/python3 directly, matching
+# exactly what execution/runners.py does today.

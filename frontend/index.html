@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CodeVis &mdash; Write Code. See Logic. Understand Flow.</title>
+<meta name="description" content="Write, run, and visualize Python, C, and C++ programs as interactive flowcharts." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%234f8cff%22/></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  // Resolve the backend origin at runtime -- no build step, no env-var
+  // injection needed. Override by setting this before the app script runs
+  // (e.g. a tiny inline snippet the hosting platform templates in).
+  window.CODEVIS_API_BASE = window.CODEVIS_API_BASE || "http://localhost:5001";
+</script>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="brand">
+    <div class="brand-mark">CV</div>
+    <div class="brand-name">CodeVis</div>
+    <div class="brand-tag">Write Code. See Logic. Understand Flow.</div>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Workspace</a>
+    <a href="landing.html">About</a>
+    <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
+
+<main class="workspace">
+  <div class="toolbar">
+    <select id="language-select" class="select">
+      <option value="python" selected>Python</option>
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
+    </select>
+
+    <button id="run-btn" class="btn btn-primary">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      Run &amp; Analyze
+    </button>
+
+    <div class="toolbar-divider"></div>
+
+    <button id="samples-btn" class="btn">Examples</button>
+    <button id="load-btn" class="btn">Load</button>
+    <input type="file" id="load-file-input" accept=".py,.c,.cpp,.txt" hidden />
+    <button id="save-btn" class="btn">Download</button>
+    <button id="reset-btn" class="btn">Reset</button>
+
+    <div class="toolbar-spacer"></div>
+
+    <button id="font-decrease-btn" class="btn btn-icon" title="Decrease font size">A&#8211;</button>
+    <button id="font-increase-btn" class="btn btn-icon" title="Increase font size">A+</button>
+    <button id="fullscreen-btn" class="btn btn-icon" title="Toggle fullscreen editor">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+  </div>
+
+  <div class="panes">
+    <section class="pane pane-editor">
+      <div class="pane-header">
+        <span>Code Editor</span>
+      </div>
+      <div id="monaco-container"></div>
+    </section>
+
+    <section class="pane pane-flow">
+      <div class="pane-header">
+        <span>Flowchart</span>
+        <div class="pane-header-actions">
+          <button id="export-svg-btn" class="icon-btn" title="Export as SVG">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="flowchart-svg-wrap">
+        <div class="flow-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="7" height="5" rx="1"/><rect x="13" y="16" width="7" height="5" rx="1"/><path d="M7.5 8v4a2 2 0 0 0 2 2h5a2 2 0 0 1 2 2v0"/></svg>
+          <div>Run your program to generate its flowchart</div>
+        </div>
+      </div>
+      <div class="flow-controls">
+        <button id="zoom-in-btn" class="btn" title="Zoom in">+</button>
+        <button id="zoom-out-btn" class="btn" title="Zoom out">&#8722;</button>
+        <button id="zoom-fit-btn" class="btn" title="Fit to screen">&#9723;</button>
+        <button id="zoom-reset-btn" class="btn" title="Reset view">&#8635;</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="output-panel" id="output-panel">
+    <div class="output-header" id="output-header">
+      <div class="output-title">
+        Program Output
+        <span id="status-pill" class="status-pill idle"><span class="status-dot"></span> Idle</span>
+      </div>
+      <span id="output-meta" class="output-meta"></span>
+    </div>
+    <div class="output-body" id="output-body">
+      <div class="output-empty">Run your program to see output here.</div>
+    </div>
+    <div class="stdin-row">
+      <input id="stdin-input" type="text" placeholder="stdin (optional) — sent to the program if it calls input()/scanf()/cin" />
+    </div>
+  </div>
+</main>
+
+<div id="samples-modal-backdrop" class="modal-backdrop" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <span>Example Programs</span>
+      <button id="samples-modal-close" class="icon-btn">&#10005;</button>
+    </div>
+    <div id="samples-modal-body" class="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<style>
+  .editor-fullscreen-open .toolbar, .editor-fullscreen-open .output-panel, .editor-fullscreen-open .pane-flow { display: none; }
+  .editor-fullscreen-open .panes { grid-template-columns: 1fr; }
+</style>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

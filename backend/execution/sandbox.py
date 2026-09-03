@@ -80,7 +80,7 @@ def _apply_resource_limits() -> None:
 
 
 _SAFE_ENV = {
-    "PATH": "/usr/bin:/bin",
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
     "LANG": "C",
     "HOME": "/tmp",
 }

@@ -40,7 +40,9 @@ CPU_TIME_LIMIT_SECONDS = int(os.environ.get("CODEVIS_CPU_LIMIT", "5"))
 WALL_TIME_LIMIT_SECONDS = float(os.environ.get("CODEVIS_WALL_LIMIT", "8"))
 MEMORY_LIMIT_BYTES = int(os.environ.get("CODEVIS_MEM_LIMIT_MB", "256")) * 1024 * 1024
 MAX_OUTPUT_BYTES = int(os.environ.get("CODEVIS_MAX_OUTPUT_BYTES", str(200 * 1024)))
-MAX_PROCESSES = int(os.environ.get("CODEVIS_MAX_PROCS", "16"))
+MAX_PROCESSES = int(os.environ.get("CODEVIS_MAX_PROCS", "128"))
+COMPILE_MEMORY_LIMIT_BYTES = int(os.environ.get("CODEVIS_COMPILE_MEM_LIMIT_MB","384") )*1024 *1024
+COMPILE_MAX_PROCESSES = 128
 FILE_SIZE_LIMIT_BYTES = 10 * 1024 * 1024
 
 
@@ -67,12 +69,16 @@ class ExecutionResult:
         }
 
 
-def _apply_resource_limits() -> None:
+def _apply_resource_limits(
+    max_processes: int | None = MAX_PROCESSES,
+    memory_limit_bytes: int = MEMORY_LIMIT_BYTES,
+) -> None:
     """Runs in the child process (via preexec_fn) right before exec()."""
     resource.setrlimit(resource.RLIMIT_CPU, (CPU_TIME_LIMIT_SECONDS, CPU_TIME_LIMIT_SECONDS + 1))
-    resource.setrlimit(resource.RLIMIT_AS, (MEMORY_LIMIT_BYTES, MEMORY_LIMIT_BYTES))
+    resource.setrlimit(resource.RLIMIT_AS, (memory_limit_bytes, memory_limit_bytes))
     resource.setrlimit(resource.RLIMIT_FSIZE, (FILE_SIZE_LIMIT_BYTES, FILE_SIZE_LIMIT_BYTES))
-    resource.setrlimit(resource.RLIMIT_NPROC, (MAX_PROCESSES, MAX_PROCESSES))
+    if max_processes is not None:
+        resource.setrlimit(resource.RLIMIT_NPROC, (max_processes, max_processes))
     resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
     # New session/process-group so the *entire* tree it spawns can be killed
     # atomically by pgid -- see _kill_group().
@@ -86,7 +92,14 @@ _SAFE_ENV = {
 }
 
 
-def run_subprocess(argv: list[str], cwd: str, stdin_data: str = "", timeout: float | None = None) -> ExecutionResult:
+def run_subprocess(
+ argv: list[str],
+ cwd: str,
+ stdin_data: str = "",
+ timeout: float | None = None,
+ max_processes: int | None = MAX_PROCESSES,
+ memory_limit_bytes: int = MEMORY_LIMIT_BYTES,
+) -> ExecutionResult:
     """Runs `argv` under the resource-limited sandbox and captures output.
 
     Uses Popen (not subprocess.run) so that on timeout we can SIGKILL the
@@ -106,7 +119,10 @@ def run_subprocess(argv: list[str], cwd: str, stdin_data: str = "", timeout: flo
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=_SAFE_ENV,
-        preexec_fn=_apply_resource_limits,
+        preexec_fn=lambda: _apply_resource_limits(
+            max_processes=max_processes,
+            memory_limit_bytes=memory_limit_bytes,
+       ),
     )
     try:
         out, err = proc.communicate(input=stdin_data.encode(), timeout=timeout)

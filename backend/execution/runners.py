@@ -10,7 +10,13 @@ from __future__ import annotations
 import os
 import time
 
-from .sandbox import ExecutionResult, TempWorkspace, run_subprocess
+from .sandbox import (
+     ExecutionResult,
+     TempWorkspace,
+     run_subprocess,
+     COMPILE_MAX_PROCESSES,
+     COMPILE_MEMORY_LIMIT_BYTES,
+)
 
 COMPILE_TIMEOUT_SECONDS = 10
 
@@ -42,7 +48,13 @@ def _compile_and_run(code: str, filename: str, compile_argv: list[str], stdin_da
             f.write(code)
 
         start = time.monotonic()
-        compile_result = run_subprocess(compile_argv, cwd=workdir, timeout=COMPILE_TIMEOUT_SECONDS)
+        compile_result = run_subprocess(
+            compile_argv,
+            cwd=workdir,
+            timeout=COMPILE_TIMEOUT_SECONDS,
+            max_processes=None,
+            memory_limit_bytes=COMPILE_MEMORY_LIMIT_BYTES,
+        )
         if compile_result.status == "timeout":
             return ExecutionResult(
                 False, "", "", "timeout", time.monotonic() - start,

@@ -91,7 +91,7 @@ silently misrepresented.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Live demo:** [🚀 Try CodeVis Live](https://codevis-kcya.onrender.com)
+**(**Live demo:** [🚀 Try CodeVis Live](https://codevis-frontend.onrender.com/)
 
 ---
 

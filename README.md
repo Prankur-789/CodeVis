@@ -91,7 +91,7 @@ silently misrepresented.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Live demo:** _add your deployed URL here after following `DEPLOYMENT.md`_
+**Live demo:** [🚀 Try CodeVis Live](https://codevis-kcya.onrender.com)
 
 ---
 
